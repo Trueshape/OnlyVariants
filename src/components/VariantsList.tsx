@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import type { Variant } from '../types/variant';
 import type { UseTabs, TabDef } from '../hooks/useTabs';
 import { useCardConfig } from '../hooks/useCardConfig';
+import { useListView } from '../hooks/useListView';
 import TabBar from './TabBar';
 import VariantCard from './VariantCard';
+import VariantsFilterBar from './VariantsFilterBar';
+import { VAULT_SOURCE_LABEL } from '../utils/vaultFilter';
 import CardLightbox from './CardLightbox';
-import CardScaleControl from './CardScaleControl';
 import type { CardColumns } from '../hooks/useCardColumns';
 import '../styles/VariantsList.css';
 
@@ -23,15 +24,6 @@ interface VariantsListProps {
   setActiveTabId: (id: string) => void;
 }
 
-type SortOption =
-  | 'name-asc'
-  | 'name-desc'
-  | 'date-newest'
-  | 'date-oldest'
-  | 'rarity'
-  | 'date-added'
-  | 'date-added-oldest';
-
 const RARITY_ORDER: Record<string, number> = {
   Spotlight: 0,
   Ultimate: 1,
@@ -39,35 +31,6 @@ const RARITY_ORDER: Record<string, number> = {
   Rare: 3,
   Unknown: 4,
 };
-
-const RARITY_TIERS = ['Rare', 'SuperRare', 'Ultimate', 'Spotlight', 'Unknown'];
-
-const VAULT_SOURCE_LABEL = "Collector's Vault";
-const VAULT_QUALITY_TIERS = ['Sensational', 'Amazing', 'Exquisite'];
-
-// The active tab + all filter/sort choices, persisted so reopening the app
-// lands you back where you were.
-const VIEW_KEY = 'marvelSnapListView';
-
-interface SavedView {
-  activeTabId?: string;
-  searchQuery?: string;
-  characterFilter?: string;
-  artistFilter?: string;
-  themeFilter?: string;
-  sourceFilter?: string;
-  rarityFilter?: string;
-  vaultQualityFilter?: string;
-  sortBy?: SortOption;
-}
-
-function loadView(): SavedView {
-  try {
-    return JSON.parse(localStorage.getItem(VIEW_KEY) || '{}') as SavedView;
-  } catch {
-    return {};
-  }
-}
 
 export default function VariantsList({
   allVariants,
@@ -80,38 +43,8 @@ export default function VariantsList({
   setActiveTabId,
 }: VariantsListProps) {
   const { listStore } = useCardConfig();
-  const [saved] = useState(loadView);
-  const [searchQuery, setSearchQuery] = useState(saved.searchQuery ?? '');
-  const [characterFilter, setCharacterFilter] = useState(saved.characterFilter ?? 'all');
-  const [artistFilter, setArtistFilter] = useState(saved.artistFilter ?? 'all');
-  const [themeFilter, setThemeFilter] = useState(saved.themeFilter ?? 'all');
-  const [sourceFilter, setSourceFilter] = useState(saved.sourceFilter ?? 'all');
-  const [rarityFilter, setRarityFilter] = useState(saved.rarityFilter ?? 'all');
-  const [vaultQualityFilter, setVaultQualityFilter] = useState(saved.vaultQualityFilter ?? 'all');
-  const [sortBy, setSortBy] = useState<SortOption>(saved.sortBy ?? 'name-asc');
-  // The lightbox holds its own snapshot of the list it was opened from, so
-  // changing filters behind it can't shift its index onto a stale card.
-  const [lightbox, setLightbox] = useState<{ variants: Variant[]; index: number } | null>(null);
-
-  useEffect(() => {
-    const view: SavedView = {
-      activeTabId,
-      searchQuery,
-      characterFilter,
-      artistFilter,
-      themeFilter,
-      sourceFilter,
-      rarityFilter,
-      vaultQualityFilter,
-      sortBy,
-    };
-    try {
-      localStorage.setItem(VIEW_KEY, JSON.stringify(view));
-    } catch {
-      // ignore write failures
-    }
-  }, [
-    activeTabId,
+  const view = useListView(activeTabId);
+  const {
     searchQuery,
     characterFilter,
     artistFilter,
@@ -120,7 +53,12 @@ export default function VariantsList({
     rarityFilter,
     vaultQualityFilter,
     sortBy,
-  ]);
+    setSourceFilter,
+    setVaultQualityFilter,
+  } = view;
+  // The lightbox holds its own snapshot of the list it was opened from, so
+  // changing filters behind it can't shift its index onto a stale card.
+  const [lightbox, setLightbox] = useState<{ variants: Variant[]; index: number } | null>(null);
 
   const activeTab: TabDef = tabs.tabs.find((t) => t.id === activeTabId) ?? tabs.tabs[0];
 
@@ -323,25 +261,6 @@ export default function VariantsList({
 
   const activeTabTotal = tabCounts[activeTab.id] ?? filteredVariants.length;
 
-  const hasActiveFilters =
-    characterFilter !== 'all' ||
-    artistFilter !== 'all' ||
-    themeFilter !== 'all' ||
-    sourceFilter !== 'all' ||
-    rarityFilter !== 'all' ||
-    vaultQualityFilter !== 'all' ||
-    !!searchQuery;
-
-  const clearFilters = () => {
-    setSearchQuery('');
-    setCharacterFilter('all');
-    setArtistFilter('all');
-    setThemeFilter('all');
-    setSourceFilter('all');
-    setRarityFilter('all');
-    setVaultQualityFilter('all');
-  };
-
   return (
     <div className="variants-list-container">
       <TabBar
@@ -357,144 +276,34 @@ export default function VariantsList({
         onDelete={onDeleteTab}
       />
 
-      <div className="filter-bar">
-        <div className="filter-bar-grid">
-        <div className="filter-field filter-search">
-          <label>Search variant or card</label>
-          <div className="search-bar">
-            <Search size={16} />
-            <input
-              type="text"
-              placeholder="e.g. Spider-Man, Dan Hipp..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-          </div>
-        </div>
-
-        <div className="filter-field">
-          <label>Character</label>
-          <select value={characterFilter} onChange={(e) => setCharacterFilter(e.target.value)}>
-            <option value="all">All characters</option>
-            {characterOptions.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="filter-field">
-          <label>Artist</label>
-          <select value={artistFilter} onChange={(e) => setArtistFilter(e.target.value)}>
-            <option value="all">All artists</option>
-            {artistOptions.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="filter-field">
-          <label>Theme</label>
-          <select value={themeFilter} onChange={(e) => setThemeFilter(e.target.value)}>
-            <option value="all">All themes</option>
-            {themeOptions.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="filter-field">
-          <label>Source</label>
-          <select
-            value={sourceFilter}
-            onChange={(e) => {
-              setSourceFilter(e.target.value);
-              if (e.target.value !== VAULT_SOURCE_LABEL) setVaultQualityFilter('all');
-            }}
-          >
-            <option value="all">All sources</option>
-            {sourceOptions.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="filter-field">
-          <label>Rarity</label>
-          <select value={rarityFilter} onChange={(e) => setRarityFilter(e.target.value)}>
-            <option value="all">All rarities</option>
-            {RARITY_TIERS.map((tier) => (
-              <option key={tier} value={tier}>
-                {tier}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="filter-field">
-          <label>Sort by</label>
-          <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortOption)}>
-            <option value="name-asc">Card Name (A-Z)</option>
-            <option value="name-desc">Card Name (Z-A)</option>
-            <option value="date-newest">Release Date (newest)</option>
-            <option value="date-oldest">Release Date (oldest)</option>
-            <option value="rarity">Rarity</option>
-            {isOwnedTab && (
-              <>
-                <option value="date-added">Acquisition Date (newest)</option>
-                <option value="date-added-oldest">Acquisition Date (oldest)</option>
-              </>
-            )}
-          </select>
-        </div>
-        </div>
-
-        <div className="rarity-filter-row-inline">
-          <div className="rarity-row-content">
-            <div className="results-count results-count-full">
-              {hasActiveFilters && (
-                <button className="clear-filters" onClick={clearFilters} title="Clear all filters">
-                  <X size={14} />
-                  Clear filters
-                </button>
-              )}
-              Showing: <strong>{filteredVariants.length}</strong> of {activeTabTotal}
-            </div>
-            <CardScaleControl cardColumns={cardColumns} />
-          </div>
-        </div>
-      </div>
-
-      {sourceFilter === VAULT_SOURCE_LABEL && (
-        <div className="rarity-filter-row">
-          <span className="rarity-filter-label">Filter by Vault quality</span>
-          <div className="rarity-chips">
-            <button
-              className={`rarity-chip vault-chip ${vaultQualityFilter === 'all' ? 'active' : ''}`}
-              onClick={() => setVaultQualityFilter('all')}
-            >
-              All
-            </button>
-            {VAULT_QUALITY_TIERS.map((tier) => (
-              <button
-                key={tier}
-                className={`rarity-chip vault-chip ${vaultQualityFilter === tier ? 'active' : ''}`}
-                onClick={() => setVaultQualityFilter(tier)}
-              >
-                {tier}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <VariantsFilterBar
+        searchQuery={searchQuery}
+        onSearchQueryChange={view.setSearchQuery}
+        characterFilter={characterFilter}
+        onCharacterFilterChange={view.setCharacterFilter}
+        characterOptions={characterOptions}
+        artistFilter={artistFilter}
+        onArtistFilterChange={view.setArtistFilter}
+        artistOptions={artistOptions}
+        themeFilter={themeFilter}
+        onThemeFilterChange={view.setThemeFilter}
+        themeOptions={themeOptions}
+        sourceFilter={sourceFilter}
+        onSourceFilterChange={setSourceFilter}
+        sourceOptions={sourceOptions}
+        rarityFilter={rarityFilter}
+        onRarityFilterChange={view.setRarityFilter}
+        vaultQualityFilter={vaultQualityFilter}
+        onVaultQualityFilterChange={setVaultQualityFilter}
+        sortBy={sortBy}
+        onSortByChange={view.setSortBy}
+        isOwnedTab={isOwnedTab}
+        hasActiveFilters={view.hasActiveFilters}
+        onClearFilters={view.clearFilters}
+        filteredCount={filteredVariants.length}
+        activeTabTotal={activeTabTotal}
+        cardColumns={cardColumns}
+      />
 
       <div className="variants-grid">
         {filteredVariants.length > 0 ? (
@@ -505,10 +314,10 @@ export default function VariantsList({
               isOwned={ownedIds.has(variant.id)}
               onZoom={() => setLightbox({ variants: filteredVariants, index: i })}
               activeViewId={activeTab.id}
-              onFilterRarity={setRarityFilter}
+              onFilterRarity={view.setRarityFilter}
               onFilterSource={setSourceFilter}
-              onFilterArtist={setArtistFilter}
-              onFilterTheme={setThemeFilter}
+              onFilterArtist={view.setArtistFilter}
+              onFilterTheme={view.setThemeFilter}
               onFilterVaultQuality={(quality) => {
                 setSourceFilter(VAULT_SOURCE_LABEL);
                 setVaultQualityFilter(quality);
