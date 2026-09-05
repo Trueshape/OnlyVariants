@@ -1,6 +1,9 @@
-// The tests only need `localStorage`, not a full DOM - so they run in the
+import '@testing-library/jest-dom/vitest';
+
+// Most tests only need `localStorage`, not a full DOM - so they run in the
 // plain `node` vitest environment with this tiny in-memory stub instead of
-// pulling in jsdom (which has a narrow Node-version support window).
+// pulling in jsdom. Component tests opt into jsdom per-file via a
+// `// @vitest-environment jsdom` docblock instead of switching it globally.
 class MemoryStorage implements Storage {
   private store = new Map<string, string>();
 
