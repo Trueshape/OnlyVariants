@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 // or a "list" the user adds cards to (persisted under `listKey`). 'wishlist'
 // is a list too, but pinned and non-renameable.
 export type TabKind = 'view' | 'wishlist' | 'list';
-// Some list tabs also drive a card-image indicator, tied to this role rather
-// than to the (renameable) tab name.
+// Some list tabs pick their context-menu icon (Star/ThumbsDown) from this
+// role rather than from the (renameable) tab name.
 export type TabRole = 'favorites' | 'disliked';
 
 export interface TabDef {
