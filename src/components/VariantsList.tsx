@@ -2,9 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import type { Variant } from '../types/variant';
 import type { UseTabs, TabDef } from '../hooks/useTabs';
-import type { ListStore } from '../hooks/useListStore';
-import type { UseStatusStyles } from '../hooks/useStatusStyles';
-import type { UseBadgeColors } from '../hooks/useBadgeColors';
+import { useCardConfig } from '../hooks/useCardConfig';
 import TabBar from './TabBar';
 import VariantCard from './VariantCard';
 import CardLightbox from './CardLightbox';
@@ -17,9 +15,6 @@ interface VariantsListProps {
   ownedIds: Set<string>;
   acquisitionDates: Record<string, string>;
   tabs: UseTabs;
-  listStore: ListStore;
-  statusStyles: UseStatusStyles;
-  badgeColors: UseBadgeColors;
   /** Delete a tab AND wipe its list data (App wires this up). */
   onDeleteTab: (id: string) => void;
   cardColumns: CardColumns;
@@ -79,14 +74,12 @@ export default function VariantsList({
   ownedIds,
   acquisitionDates,
   tabs,
-  listStore,
-  statusStyles,
-  badgeColors,
   onDeleteTab,
   cardColumns,
   activeTabId,
   setActiveTabId,
 }: VariantsListProps) {
+  const { listStore } = useCardConfig();
   const [saved] = useState(loadView);
   const [searchQuery, setSearchQuery] = useState(saved.searchQuery ?? '');
   const [characterFilter, setCharacterFilter] = useState(saved.characterFilter ?? 'all');
@@ -330,9 +323,6 @@ export default function VariantsList({
 
   const activeTabTotal = tabCounts[activeTab.id] ?? filteredVariants.length;
 
-  // The list-bearing tabs, passed to every card for its right-click menu.
-  const listTabs = useMemo(() => tabs.tabs.filter((t) => t.kind !== 'view'), [tabs.tabs]);
-
   const hasActiveFilters =
     characterFilter !== 'all' ||
     artistFilter !== 'all' ||
@@ -513,10 +503,6 @@ export default function VariantsList({
               key={variant.id}
               variant={variant}
               isOwned={ownedIds.has(variant.id)}
-              listTabs={listTabs}
-              listStore={listStore}
-              statusStyles={statusStyles}
-              badgeColors={badgeColors}
               onZoom={() => setLightbox({ variants: filteredVariants, index: i })}
               activeViewId={activeTab.id}
               onFilterRarity={setRarityFilter}

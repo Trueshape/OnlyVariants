@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { User, Palette, Sparkles, Package, Coins } from 'lucide-react';
 import type { Variant } from '../types/variant';
 import type { TabDef } from '../hooks/useTabs';
-import type { ListStore } from '../hooks/useListStore';
-import type { UseStatusStyles } from '../hooks/useStatusStyles';
-import type { UseBadgeColors, BadgeKey } from '../hooks/useBadgeColors';
+import type { BadgeKey } from '../hooks/useBadgeColors';
+import { useCardConfig } from '../hooks/useCardConfig';
 import CardContextMenu, { type CardContextMenuItem } from './CardContextMenu';
 import { CARD_PLACEHOLDER } from '../utils/placeholder';
 import { hexToRgba, badgeStyle } from '../utils/color';
@@ -14,16 +13,6 @@ import '../styles/VariantCard.css';
 interface VariantCardProps {
   variant: Variant;
   isOwned: boolean;
-  // Every list-bearing tab (wishlist + all list tabs), in tab-bar order. The
-  // card reads/toggles membership through listStore.
-  listTabs: TabDef[];
-  listStore: ListStore;
-  // Per-status (owned / unowned / unreleased / each list) border and
-  // ribbon-or-bar indicator, editable from the Card styles settings page.
-  statusStyles: UseStatusStyles;
-  // Per-badge (Source, Rarity, Artist, Theme, Vault Quality, Price, Bundle)
-  // color, editable from the Badge colors settings page.
-  badgeColors: UseBadgeColors;
   // Click the card image to open the full-size lightbox.
   onZoom?: () => void;
   // Id of the tab currently being viewed (or a stand-in id for a page with
@@ -46,10 +35,6 @@ interface VariantCardProps {
 export default function VariantCard({
   variant,
   isOwned,
-  listTabs,
-  listStore,
-  statusStyles,
-  badgeColors,
   onZoom,
   activeViewId,
   onFilterRarity,
@@ -58,6 +43,7 @@ export default function VariantCard({
   onFilterTheme,
   onFilterVaultQuality,
 }: VariantCardProps) {
+  const { listTabs, listStore, statusStyles, badgeColors } = useCardConfig();
   const id = variant.id;
 
   const inList = (tab: TabDef) => !!tab.listKey && listStore.list(tab.listKey).has(id);

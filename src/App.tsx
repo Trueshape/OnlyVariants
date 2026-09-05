@@ -10,6 +10,7 @@ import { useStatusStyles } from './hooks/useStatusStyles';
 import { useBadgeColors } from './hooks/useBadgeColors';
 import { useCardColumns } from './hooks/useCardColumns';
 import { useVariantsData } from './hooks/useVariantsData';
+import { CardConfigProvider } from './contexts/CardConfigContext';
 import { getVariantPrice } from './utils/tierPrices';
 import './App.css';
 
@@ -113,50 +114,40 @@ function App() {
         ) : loading ? (
           <div className="loading">Loading cards...</div>
         ) : (
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <VariantsList
-                  allVariants={allVariants}
-                  ownedIds={ownedIds}
-                  acquisitionDates={acquisitionDates}
-                  tabs={tabs}
-                  listStore={listStore}
-                  statusStyles={statusStyles}
-                  badgeColors={badgeColors}
-                  onDeleteTab={deleteTab}
-                  cardColumns={cardColumns}
-                  activeTabId={activeTabId}
-                  setActiveTabId={setActiveTabId}
-                />
-              }
-            />
-            <Route
-              path="/unreleased"
-              element={
-                <UnreleasedCards
-                  allVariants={allVariants}
-                  listTabs={listTabs}
-                  listStore={listStore}
-                  statusStyles={statusStyles}
-                  badgeColors={badgeColors}
-                  ownedIds={ownedIds}
-                />
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <SettingsPage
-                  allTabs={tabs.tabs}
-                  listTabs={listTabs}
-                  statusStyles={statusStyles}
-                  badgeColors={badgeColors}
-                />
-              }
-            />
-          </Routes>
+          <CardConfigProvider value={{ listTabs, listStore, statusStyles, badgeColors }}>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <VariantsList
+                    allVariants={allVariants}
+                    ownedIds={ownedIds}
+                    acquisitionDates={acquisitionDates}
+                    tabs={tabs}
+                    onDeleteTab={deleteTab}
+                    cardColumns={cardColumns}
+                    activeTabId={activeTabId}
+                    setActiveTabId={setActiveTabId}
+                  />
+                }
+              />
+              <Route
+                path="/unreleased"
+                element={<UnreleasedCards allVariants={allVariants} ownedIds={ownedIds} />}
+              />
+              <Route
+                path="/settings"
+                element={
+                  <SettingsPage
+                    allTabs={tabs.tabs}
+                    listTabs={listTabs}
+                    statusStyles={statusStyles}
+                    badgeColors={badgeColors}
+                  />
+                }
+              />
+            </Routes>
+          </CardConfigProvider>
         )}
       </div>
     </Router>

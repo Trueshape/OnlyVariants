@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Search, Heart } from 'lucide-react';
 import type { Variant } from '../types/variant';
-import type { TabDef } from '../hooks/useTabs';
-import type { ListStore } from '../hooks/useListStore';
-import type { UseStatusStyles } from '../hooks/useStatusStyles';
-import type { UseBadgeColors } from '../hooks/useBadgeColors';
+import { useCardConfig } from '../hooks/useCardConfig';
 import { snapCompleteService } from '../services/snapCompleteService';
 import VariantCard from './VariantCard';
 import CardLightbox from './CardLightbox';
@@ -12,24 +9,14 @@ import '../styles/UnreleasedCards.css';
 
 interface UnreleasedCardsProps {
   allVariants: Variant[];
-  listTabs: TabDef[];
-  listStore: ListStore;
-  statusStyles: UseStatusStyles;
-  badgeColors: UseBadgeColors;
   ownedIds: Set<string>;
 }
 
 // Stable empty array so the "no wishlist tab" case doesn't churn memo deps.
 const EMPTY_IDS: string[] = [];
 
-export default function UnreleasedCards({
-  allVariants,
-  listTabs,
-  listStore,
-  statusStyles,
-  badgeColors,
-  ownedIds,
-}: UnreleasedCardsProps) {
+export default function UnreleasedCards({ allVariants, ownedIds }: UnreleasedCardsProps) {
+  const { listTabs, listStore } = useCardConfig();
   const wishlistKey = listTabs.find((t) => t.kind === 'wishlist')?.listKey;
   const wishlistIds = wishlistKey ? listStore.list(wishlistKey).ids : EMPTY_IDS;
   const [searchQuery, setSearchQuery] = useState('');
@@ -152,10 +139,6 @@ export default function UnreleasedCards({
                           key={variant.id}
                           variant={variant}
                           isOwned={ownedIds.has(variant.id)}
-                          listTabs={listTabs}
-                          listStore={listStore}
-                          statusStyles={statusStyles}
-                          badgeColors={badgeColors}
                           activeViewId="unreleased"
                           onZoom={() =>
                             setLightbox({
