@@ -1,0 +1,38 @@
+{
+  "name": "onlyvariants",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "predev": "node scripts/predev.js",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "preview": "vite preview",
+    "scrape-all": "node scripts/extractAllVariants.js",
+    "import-owned": "node scripts/importOwnedFromSave.js",
+    "import-costs": "node scripts/importCostData.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "lucide-react": "^0.292.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.81.0",
+    "typescript": "^5.2.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  }
+}

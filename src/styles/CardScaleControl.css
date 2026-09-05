@@ -1,0 +1,39 @@
+.card-scale-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #9aa0ab;
+}
+
+.card-scale-control > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: #c8ccd4;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.card-scale-control > button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.card-scale-control > button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.card-scale-value {
+  min-width: 1ch;
+  text-align: center;
+  font-weight: 600;
+  color: #c8ccd4;
+  font-variant-numeric: tabular-nums;
+}

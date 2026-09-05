@@ -1,0 +1,358 @@
+.variant-card {
+  background: #1c1f26;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* Every card gets a faint outline for definition; a status border color
+     (owned / unowned / wishlist / any list, configurable on the Card styles
+     settings page) is set inline per card when one applies. */
+  border: 1px solid #2a2e37;
+}
+
+.variant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+}
+
+.variant-card.unreleased {
+  opacity: 0.96;
+}
+
+/* ---------- Hero image with overlaid name ---------- */
+
+.card-hero {
+  position: relative;
+  width: 100%;
+  /* The source art (460x497) has a transparent border baked in - roughly
+     46px top / 16px bottom / 62px each side. Fallback: approximate the
+     inner art ratio and bias the framing down a touch. */
+  aspect-ratio: 63 / 80;
+  background: linear-gradient(135deg, #2a2e38 0%, #1c1f26 100%);
+  overflow: hidden;
+}
+
+.card-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 58%;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+/* Where supported, crop straight to the art so there's zero dead border. */
+@supports (object-view-box: inset(1px)) {
+  .card-hero {
+    aspect-ratio: 334 / 423;
+  }
+
+  .card-hero img {
+    object-view-box: inset(46px 62px 16px 62px);
+    object-position: center;
+  }
+}
+
+.variant-card:hover .card-hero img {
+  transform: scale(1.05);
+}
+
+.card-hero-zoomable {
+  cursor: zoom-in;
+}
+
+/* Status bar and corner ribbon: flag membership in a list (or the built-in
+   "unreleased" status). Which one shows, and its color/opacity, come from
+   VariantCard's statusStyles prop (see the Card styles settings page) -
+   only geometry lives here, background is set inline per card. */
+.card-hero-status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.card-hero-status-bar span {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.card-hero-ribbon {
+  position: absolute;
+  top: 19px;
+  left: -50px;
+  z-index: 2;
+  width: 150px;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-hero-ribbon span {
+  padding: 0.1rem 0;
+  font-size: 0.52rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: #fff;
+  white-space: nowrap;
+}
+
+@keyframes card-zoom-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- Body: title + chips + info rows ---------- */
+
+.card-title {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+/* When the variant has a source page, the title itself is the link to it. */
+.card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-title a:hover {
+  text-decoration: underline;
+}
+
+.card-body {
+  position: relative;
+  padding: 0.85rem 1rem 1.1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+/* Not flex: badges flow as inline content and wrap only when a line is
+   genuinely full - nothing else shares this row, so there's no reserved
+   gutter to work around. */
+.chip-row {
+  display: block;
+  overflow: hidden;
+}
+
+.chip-row > .chip {
+  display: inline-flex;
+  vertical-align: middle;
+  margin: 0 0.3rem 0.4rem 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.26rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #c8ccd4;
+  /* A long label (e.g. "Webshop Track") wraps as a whole to the next line
+     when there's no room, rather than breaking its own text mid-word. */
+  white-space: nowrap;
+}
+
+.chip-clickable {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip-clickable:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.25);
+}
+
+/* Colors for these two come from badgeColors (Badge colors settings page),
+   set inline per card - only shape lives here. */
+.chip-source,
+.chip-rarity {
+  border-radius: 0.35rem;
+}
+
+.info-rows {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  color: #9aa0ab;
+}
+
+.info-row svg {
+  flex-shrink: 0;
+  color: #6b7280;
+}
+
+.info-label {
+  color: #7d8493;
+}
+
+.info-value-group {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  max-width: 65%;
+}
+
+/* Color comes from badgeColors (Badge colors settings page), set inline
+   per card - only shape lives here. Border is set via the `border`
+   shorthand's width/style; its color is the inline one. */
+.info-value {
+  border: 1px solid;
+  padding: 0.15rem 0.55rem;
+  border-radius: 0.35rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.info-row > .info-value {
+  margin-left: auto;
+  max-width: 60%;
+}
+
+.info-value-clickable {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+/* Brighten rather than override the color, so this works regardless of
+   which color the badge is inline-styled with. */
+.info-value-clickable:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.25);
+}
+
+.info-value-vault {
+  text-transform: uppercase;
+}
+
+.vault-chip.active {
+  background: rgba(155, 89, 182, 0.85);
+  border-color: rgba(155, 89, 182, 1);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .card-title {
+    font-size: 0.95rem;
+  }
+}
+
+/* ---------- Right-click list menu ---------- */
+
+.card-context-menu {
+  position: fixed;
+  z-index: 1100;
+  min-width: 210px;
+  padding: 5px;
+  background: #21252e;
+  border: 1px solid #3a3f4b;
+  border-radius: 0.6rem;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  animation: card-zoom-fade-in 0.1s ease;
+}
+
+.card-context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: #dfe2e8;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.card-context-menu-item:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.card-context-menu-item:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.card-context-menu-item .cm-label {
+  flex: 1;
+}
+
+.card-context-menu-item .cm-check {
+  color: #2ecc71;
+}
+
+.card-context-menu-item.checked {
+  color: #ffffff;
+}
+
+/* per-list icon colors */
+.cm-wishlist .cm-icon { color: #e74c3c; }
+.cm-favorites .cm-icon { color: #f1c40f; }
+.cm-list .cm-icon { color: #cd7f32; }
+.cm-disliked .cm-icon { color: #8a94a6; }
+.cm-external .cm-icon { color: #8fa1f7; }
+
+/* separator before the last (non-list) action */
+.cm-external {
+  margin-top: 4px;
+  border-top: 1px solid #3a3f4b;
+  padding-top: 0.55rem;
+  border-radius: 0 0 0.4rem 0.4rem;
+}

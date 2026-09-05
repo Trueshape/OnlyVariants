@@ -1,0 +1,158 @@
+.navigation {
+  background: linear-gradient(135deg, #17181c 0%, #0e0f12 100%);
+  color: white;
+  padding: 0.5rem 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  border-bottom: 1px solid #23262e;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 2100px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Also the "hide card details" toggle (mirrors the eye button - same
+   shared state, either one flips it). The pill itself always stays -
+   only the word blends into it (same color as the background), so the
+   same spot stays clickable and visible to bring it back. */
+.logo-badge {
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  background: #e6272c;
+  color: white;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.logo-badge-hidden {
+  color: #e6272c;
+}
+
+.logo-badge-hidden:hover {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.logo-text {
+  color: white;
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e6272c;
+  margin-left: 0.1rem;
+  animation: logo-dot-glow 2s ease-in-out infinite;
+}
+
+@keyframes logo-dot-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 2px 0 rgba(230, 39, 44, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 8px 3px rgba(230, 39, 44, 0.9);
+  }
+}
+
+.nav-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.nav-stat {
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+.nav-stat strong {
+  color: white;
+  font-weight: 700;
+}
+
+.nav-stat-separator {
+  width: 1px;
+  height: 1.1rem;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.3rem 0.45rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-bottom-color: white;
+}
+
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-bottom-color: white;
+}
+
+.nav-toggle-btn {
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-stats {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-links {
+    gap: 0.75rem;
+  }
+}

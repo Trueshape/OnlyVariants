@@ -1,0 +1,244 @@
+.css-header h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  color: #f2f3f5;
+}
+
+.css-header p {
+  margin: 0 0 1.5rem 0;
+  color: #9aa0ab;
+  font-size: 0.9rem;
+  max-width: 68ch;
+  line-height: 1.5;
+}
+
+.css-table {
+  background: #161920;
+  border: 1px solid #23262e;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.css-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 2.2fr 1.1fr 0.9fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem 1.1rem;
+  border-top: 1px solid #23262e;
+}
+
+.css-row:first-child {
+  border-top: none;
+}
+
+.css-row-head {
+  color: #7d8493;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #14161c;
+}
+
+.css-label {
+  color: #dfe2e8;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.css-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.css-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #c8ccd4;
+  font-size: 0.8rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.css-checkbox input {
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.css-color-input {
+  width: 34px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #2c303a;
+  border-radius: 0.4rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.css-color-input:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.css-style-select {
+  height: 30px;
+  background: #1c1f26;
+  border: 1px solid #2c303a;
+  color: #dfe2e8;
+  border-radius: 0.4rem;
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.css-opacity-slider {
+  width: 90px;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.css-opacity-slider:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.css-opacity-value {
+  color: #7d8493;
+  font-size: 0.75rem;
+  min-width: 2.4em;
+}
+
+.css-hide-details {
+  position: relative;
+}
+
+.css-hide-details summary {
+  list-style: none;
+  cursor: pointer;
+  color: #9aa0ab;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #2c303a;
+  border-radius: 0.4rem;
+  background: #1c1f26;
+  white-space: nowrap;
+}
+
+.css-hide-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.css-hide-details[open] summary {
+  border-color: #667eea;
+  color: #dfe2e8;
+}
+
+.css-hide-options {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 160px;
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.6rem;
+  background: #21252e;
+  border: 1px solid #3a3f4b;
+  border-radius: 0.5rem;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
+.css-hide-option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #dfe2e8;
+  font-size: 0.8rem;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.css-hide-option input {
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.css-preview-cell {
+  justify-content: flex-end;
+}
+
+.css-preview-swatch {
+  position: relative;
+  width: 56px;
+  height: 40px;
+  border-radius: 0.4rem;
+  border: 2px solid #2a2e37;
+  background: linear-gradient(135deg, #2a2e38 0%, #1c1f26 100%);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.css-preview-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+}
+
+.css-preview-ribbon {
+  position: absolute;
+  top: 4px;
+  left: -14px;
+  width: 46px;
+  height: 12px;
+  transform: rotate(-45deg);
+  transform-origin: center;
+}
+
+.css-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 0.4rem;
+  border: 1px solid #2c303a;
+  background: transparent;
+  color: #9aa0ab;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.css-reset-btn:hover:not(:disabled) {
+  border-color: #667eea;
+  color: #8fa1f7;
+}
+
+.css-reset-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+@media (max-width: 900px) {
+  .css-row {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .css-row-head {
+    display: none;
+  }
+
+  .css-preview-cell {
+    justify-content: flex-start;
+  }
+}

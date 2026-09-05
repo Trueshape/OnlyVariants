@@ -1,0 +1,127 @@
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.4rem 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #23262e;
+}
+
+.tab-slot {
+  position: relative;
+  display: flex;
+}
+
+/* drop indicator when reordering */
+.tab-slot.drop-before::before,
+.tab-add.drop-before::before {
+  content: '';
+  position: absolute;
+  left: -0.5rem;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: #667eea;
+  border-radius: 1px;
+}
+.tab-add.drop-before::before {
+  left: -0.5rem;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 0.55rem 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #7d8493;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+}
+
+.tab-slot[draggable='true'] .tab {
+  cursor: grab;
+}
+
+.tab:hover {
+  color: #dfe2e8;
+}
+
+.tab.active {
+  color: #8fa1f7;
+  border-bottom-color: #667eea;
+}
+
+.tab.dragging {
+  opacity: 0.4;
+}
+
+.tab-edit {
+  font: inherit;
+  font-weight: 600;
+  color: #ffffff;
+  background: #1c1f26;
+  border: 1px solid #667eea;
+  border-radius: 0.3rem;
+  padding: 0.35rem 0.4rem;
+  width: 10ch;
+  min-width: 8ch;
+}
+
+.tab-add {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.35rem;
+  color: #6b7280;
+}
+.tab-add:hover {
+  color: #8fa1f7;
+}
+
+/* ---------- Tab right-click menu ---------- */
+
+.tab-menu {
+  position: fixed;
+  z-index: 1100;
+  min-width: 150px;
+  padding: 5px;
+  background: #21252e;
+  border: 1px solid #3a3f4b;
+  border-radius: 0.5rem;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
+.tab-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 0;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: #dfe2e8;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tab-menu-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.tab-menu-item.danger {
+  color: #e07a72;
+}
+.tab-menu-item.danger:hover {
+  background: rgba(224, 122, 114, 0.14);
+}
+
+.tab-menu-empty {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}

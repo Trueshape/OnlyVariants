@@ -1,0 +1,283 @@
+.variants-list-container {
+  max-width: 2100px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.list-header h1 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem 0;
+  color: #f2f3f5;
+}
+
+.stats {
+  color: #9aa0ab;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Tab bar styles live in TabBar.css */
+
+/* ---------- Filter bar ---------- */
+
+.filter-bar {
+  background: #161920;
+  border: 1px solid #23262e;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.filter-bar-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(5, 1fr) 1.1fr;
+  gap: 0.6rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.filter-field label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #7d8493;
+}
+
+.filter-field select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 2.5rem;
+  background: #1c1f26;
+  border: 1px solid #2c303a;
+  color: #dfe2e8;
+  border-radius: 0.5rem;
+  padding: 0 0.65rem;
+  font-size: 0.875rem;
+  line-height: 2.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.filter-field select:hover,
+.filter-field select:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.search-bar {
+  box-sizing: border-box;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #1c1f26;
+  padding: 0 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #2c303a;
+  color: #7d8493;
+  transition: all 0.2s ease;
+}
+
+.search-bar:focus-within {
+  border-color: #667eea;
+  color: #dfe2e8;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  color: #dfe2e8;
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: #565c69;
+}
+
+/* ---------- Rarity quick-filter row ---------- */
+
+.rarity-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #23262e;
+}
+
+.filter-bar > .rarity-filter-row {
+  margin-bottom: 0;
+}
+
+.rarity-filter-row-inline {
+  display: flex;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  border: none;
+}
+
+.rarity-row-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0;
+}
+
+.results-count-full {
+  margin-left: 0;
+}
+
+.variants-list-container > .rarity-filter-row {
+  margin-bottom: 1rem;
+}
+
+.rarity-filter-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #7d8493;
+  white-space: nowrap;
+}
+
+.rarity-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rarity-chip {
+  background: #1c1f26;
+  border: 1px solid #2c303a;
+  color: #9aa0ab;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rarity-chip:hover {
+  border-color: #667eea;
+  color: #dfe2e8;
+}
+
+.rarity-chip.active {
+  background: #e74c3c;
+  border-color: #e74c3c;
+  color: white;
+}
+
+.results-count {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #9aa0ab;
+  white-space: nowrap;
+}
+
+.results-count strong {
+  color: #f2f3f5;
+}
+
+.clear-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: transparent;
+  border: 1px solid #2c303a;
+  color: #9aa0ab;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-filters:hover {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+/* ---------- Grid ---------- */
+
+.variants-grid {
+  display: grid;
+  /* data-card-cols is set on <html> by the "cards per row" control (already
+     capped for the window width in JS). One explicit rule per value, so no
+     var()/min() inside repeat() - works in every engine. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+:root[data-card-cols='1'] .variants-grid { grid-template-columns: 1fr; }
+:root[data-card-cols='2'] .variants-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+:root[data-card-cols='3'] .variants-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+:root[data-card-cols='5'] .variants-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+:root[data-card-cols='6'] .variants-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+:root[data-card-cols='7'] .variants-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+:root[data-card-cols='8'] .variants-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+:root[data-card-cols='9'] .variants-grid { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+:root[data-card-cols='10'] .variants-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+:root[data-card-cols='11'] .variants-grid { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+:root[data-card-cols='12'] .variants-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: #7d8493;
+}
+
+.empty-state p {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .variants-list-container {
+    padding: 0.75rem;
+  }
+
+  .list-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .list-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .results-count {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+}
