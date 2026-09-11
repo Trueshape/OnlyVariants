@@ -51,6 +51,19 @@ function App() {
   const wishlistIds = wishlistKey ? listStore.list(wishlistKey).ids : undefined;
   const listTabs = useMemo(() => tabs.tabs.filter((t) => t.kind !== 'view'), [tabs.tabs]);
 
+  // Owned and wishlisted are mutually exclusive: adding an owned card to the
+  // wishlist is already blocked (VariantCard's context menu), but a card can
+  // still cross over on its own - it was wishlisted before you got it, and a
+  // fresh collection import (aggiorna-dati.bat) now marks it owned. Drop it
+  // from the wishlist the moment that happens.
+  useEffect(() => {
+    if (!wishlistKey || !wishlistIds) return;
+    const wishlist = listStore.list(wishlistKey);
+    for (const id of wishlistIds) {
+      if (ownedIds.has(id)) wishlist.remove(id);
+    }
+  }, [ownedIds, wishlistKey, wishlistIds, listStore]);
+
   // Total gold/tokens to buy every wishlisted card - confirmed price where
   // known, otherwise its rarity/vault tier's fixed price; cards with
   // neither (unreleased, or a real-money-only source) don't contribute.
