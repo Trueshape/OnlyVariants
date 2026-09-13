@@ -33,17 +33,37 @@ describe('searchVariants', () => {
 });
 
 describe('getUnreleasedVariants', () => {
+  // Relative to "now" so the fixture never drifts into the past as the
+  // calendar moves on.
+  const daysFromNow = (n: number): string => {
+    const d = new Date();
+    d.setDate(d.getDate() + n);
+    return d.toISOString();
+  };
+
   it('keeps only unreleased/unknown and sorts dated ones ascending, undated last', () => {
     const data = [
-      v({ id: 'released', releaseStatus: 'released', releaseDate: '2020-01-01' }),
-      v({ id: 'late', releaseStatus: 'unreleased', releaseDate: '2026-12-01' }),
+      v({ id: 'released', releaseStatus: 'released', releaseDate: daysFromNow(-30) }),
+      v({ id: 'late', releaseStatus: 'unreleased', releaseDate: daysFromNow(60) }),
       v({ id: 'nodate', releaseStatus: 'unknown' }),
-      v({ id: 'soon', releaseStatus: 'unreleased', releaseDate: '2026-06-01' }),
+      v({ id: 'soon', releaseStatus: 'unreleased', releaseDate: daysFromNow(5) }),
     ];
     expect(snapCompleteService.getUnreleasedVariants(data).map((x) => x.id)).toEqual([
       'soon',
       'late',
       'nodate',
+    ]);
+  });
+
+  it('drops a dated unreleased/unknown variant whose day has already passed', () => {
+    const data = [
+      v({ id: 'yesterday', releaseStatus: 'unreleased', releaseDate: daysFromNow(-1) }),
+      v({ id: 'today', releaseStatus: 'unreleased', releaseDate: daysFromNow(0) }),
+      v({ id: 'tomorrow', releaseStatus: 'unreleased', releaseDate: daysFromNow(1) }),
+    ];
+    expect(snapCompleteService.getUnreleasedVariants(data).map((x) => x.id)).toEqual([
+      'today',
+      'tomorrow',
     ]);
   });
 });

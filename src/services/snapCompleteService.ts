@@ -57,6 +57,12 @@ function writeCachedVariants(variants: Variant[], version: string): void {
   }
 }
 
+// Midnight, local time, for calendar-day comparisons that ignore both
+// time-of-day and the UTC release timestamp's own clock hour.
+function startOfLocalDay(d: Date): number {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+}
+
 export const snapCompleteService = {
   // Fetch all variants, using localStorage as a cache and only re-downloading
   // the (multi-MB) variants.json when public/variants-meta.json reports a new version.
@@ -123,9 +129,18 @@ export const snapCompleteService = {
   // release date ('unreleased') and the ones merely datamined/leaked with
   // no confirmed date at all ('unknown') - they're just as much "not
   // released" as the dated ones, they just don't have a date to sort by.
+  // A dated one whose day has already passed is stale data (its status
+  // hasn't caught up to 'released' yet) rather than a real future card, so
+  // it's dropped instead of piling up as a "past" entry in the timeline.
   getUnreleasedVariants(variants: Variant[]): Variant[] {
+    const startOfToday = startOfLocalDay(new Date());
     return variants
       .filter((v) => v.releaseStatus === 'unreleased' || v.releaseStatus === 'unknown')
+      .filter((v) => {
+        if (!v.releaseDate) return true;
+        const date = new Date(v.releaseDate);
+        return isNaN(date.getTime()) || startOfLocalDay(date) >= startOfToday;
+      })
       .sort((a, b) => {
         // Variants with no confirmed release date always sort to the end,
         // regardless of name/id order, instead of being interleaved with
