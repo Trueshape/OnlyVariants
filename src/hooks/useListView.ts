@@ -69,7 +69,18 @@ export function useListView(activeTabId: string): UseListView {
   const [sourceFilter, setSourceFilter] = useState(saved.sourceFilter ?? 'all');
   const [rarityFilter, setRarityFilter] = useState(saved.rarityFilter ?? 'all');
   const [vaultQualityFilter, setVaultQualityFilter] = useState(saved.vaultQualityFilter ?? 'all');
-  const [sortBy, setSortBy] = useState<SortOption>(saved.sortBy ?? 'name-asc');
+  const [sortByRaw, setSortBy] = useState<SortOption>(saved.sortBy ?? 'name-asc');
+
+  // The acquisition-date sort options only make sense - and only appear in
+  // the "Sort by" dropdown at all - on the Owned tab. Derived rather than
+  // synced back with an effect, so leaving that tab can't leave the grid
+  // sorted by a criterion the dropdown no longer even offers (it'd fall
+  // back to showing "Card Name (A-Z)" with a different order actually
+  // applied) - and switching back to Owned still remembers the choice.
+  const sortBy: SortOption =
+    activeTabId !== 'owned' && (sortByRaw === 'date-added' || sortByRaw === 'date-added-oldest')
+      ? 'name-asc'
+      : sortByRaw;
 
   useEffect(() => {
     const view: SavedView = {
