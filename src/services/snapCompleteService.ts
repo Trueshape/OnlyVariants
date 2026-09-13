@@ -129,6 +129,8 @@ export const snapCompleteService = {
   // release date ('unreleased') and the ones merely datamined/leaked with
   // no confirmed date at all ('unknown') - they're just as much "not
   // released" as the dated ones, they just don't have a date to sort by.
+  // Promo-source variants are excluded outright - they're not part of the
+  // release timeline the same way (per product decision).
   // A dated one whose day has already passed is stale data (its status
   // hasn't caught up to 'released' yet) rather than a real future card, so
   // it's dropped instead of piling up as a "past" entry in the timeline.
@@ -136,6 +138,7 @@ export const snapCompleteService = {
     const startOfToday = startOfLocalDay(new Date());
     return variants
       .filter((v) => v.releaseStatus === 'unreleased' || v.releaseStatus === 'unknown')
+      .filter((v) => v.source !== 'Promo')
       .filter((v) => {
         if (!v.releaseDate) return true;
         const date = new Date(v.releaseDate);
