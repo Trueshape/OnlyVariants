@@ -70,6 +70,22 @@ export function useListView(activeTabId: string): UseListView {
   const [rarityFilter, setRarityFilter] = useState(saved.rarityFilter ?? 'all');
   const [vaultQualityFilter, setVaultQualityFilter] = useState(saved.vaultQualityFilter ?? 'all');
   const [sortByRaw, setSortBy] = useState<SortOption>(saved.sortBy ?? 'name-asc');
+  // Whether this session has already defaulted the Owned tab's sort once.
+  // Plain state (not a ref) so the adjustment below stays a pure part of
+  // rendering rather than a mutation hidden inside it - see "Adjusting
+  // state when a prop changes" in the React docs for this pattern.
+  const [hasAutoSortedOwned, setHasAutoSortedOwned] = useState(false);
+
+  // The first time this session the Owned tab is opened, it should already
+  // read "most recently acquired first", regardless of whatever sort was
+  // last used or saved - after that, the user's own choice (including
+  // picking that same sort again, or switching away from it) is left alone
+  // for the rest of the session.
+  const isFirstOwnedVisitThisSession = activeTabId === 'owned' && !hasAutoSortedOwned;
+  if (isFirstOwnedVisitThisSession) {
+    setHasAutoSortedOwned(true);
+    if (sortByRaw !== 'date-added') setSortBy('date-added');
+  }
 
   // The acquisition-date sort options only make sense - and only appear in
   // the "Sort by" dropdown at all - on the Owned tab. Derived rather than
@@ -77,8 +93,9 @@ export function useListView(activeTabId: string): UseListView {
   // sorted by a criterion the dropdown no longer even offers (it'd fall
   // back to showing "Card Name (A-Z)" with a different order actually
   // applied) - and switching back to Owned still remembers the choice.
-  const sortBy: SortOption =
-    activeTabId !== 'owned' && (sortByRaw === 'date-added' || sortByRaw === 'date-added-oldest')
+  const sortBy: SortOption = isFirstOwnedVisitThisSession
+    ? 'date-added'
+    : activeTabId !== 'owned' && (sortByRaw === 'date-added' || sortByRaw === 'date-added-oldest')
       ? 'name-asc'
       : sortByRaw;
 

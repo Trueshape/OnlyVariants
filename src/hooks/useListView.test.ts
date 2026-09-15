@@ -9,6 +9,35 @@ describe('useListView', () => {
   // would otherwise leak into the next one.
   beforeEach(() => localStorage.clear());
 
+  it('defaults the Owned tab to acquisition-date sort the first time it opens each session', () => {
+    const { result } = renderHook(({ tabId }) => useListView(tabId), {
+      initialProps: { tabId: 'owned' },
+    });
+    expect(result.current.sortBy).toBe('date-added');
+  });
+
+  it('still defaults to acquisition-date the first time Owned is reached via a tab switch', () => {
+    const { result, rerender } = renderHook(({ tabId }) => useListView(tabId), {
+      initialProps: { tabId: 'wishlist' },
+    });
+    expect(result.current.sortBy).toBe('name-asc');
+
+    rerender({ tabId: 'owned' });
+    expect(result.current.sortBy).toBe('date-added');
+  });
+
+  it('does not re-force acquisition-date on a second visit to Owned after the user changed it', () => {
+    const { result, rerender } = renderHook(({ tabId }) => useListView(tabId), {
+      initialProps: { tabId: 'owned' },
+    });
+    expect(result.current.sortBy).toBe('date-added');
+
+    act(() => result.current.setSortBy('rarity'));
+    rerender({ tabId: 'all' });
+    rerender({ tabId: 'owned' });
+    expect(result.current.sortBy).toBe('rarity');
+  });
+
   it('keeps an acquisition-date sort while on the Owned tab', () => {
     const { result } = renderHook(({ tabId }) => useListView(tabId), {
       initialProps: { tabId: 'owned' },
