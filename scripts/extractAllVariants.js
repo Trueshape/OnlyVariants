@@ -79,13 +79,13 @@ async function main() {
 
   console.log('🔧 Eseguendo il bundle in sandbox...\n');
 
-  // The bundle is: <sentry IIFE>; import{_t as e}from"./index-<hash>.js";
+  // The bundle is: <sentry IIFE>; import{<name> as e}from"./<module>-<hash>.js";
   // var t=e({...big data...}); export{t as default};
   // Strip everything up to and including that import (the hash varies) and
   // stub `e` as identity - the real decoding happens below. Then expose the
   // data instead of ES-exporting it.
   let patched = content.replace(
-    /^[\s\S]*?import\s*\{\s*_t as e\s*\}\s*from\s*"[^"]*";/,
+    /^[\s\S]*?import\s*\{\s*[\w$]+ as e\s*\}\s*from\s*"[^"]*";/,
     'const e = (x) => x;'
   );
   patched = patched.replace(/export\s*\{\s*t as default\s*\};?/, 'globalThis.__extractedData = t;');
