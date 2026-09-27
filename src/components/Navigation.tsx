@@ -98,7 +98,7 @@ export default function Navigation({ stats, hideCardDetails, onToggleHideCardDet
               className={`nav-link ${location.pathname === '/unreleased' ? 'active' : ''}`}
             >
               <Clock size={18} />
-              <span>Unreleased</span>
+              <span>Upcoming</span>
             </Link>
           </li>
           <li>
