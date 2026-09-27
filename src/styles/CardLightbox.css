@@ -51,8 +51,8 @@
 .card-lightbox-cost {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.8rem;
+  gap: 0.5rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
