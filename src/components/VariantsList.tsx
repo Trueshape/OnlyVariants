@@ -183,24 +183,20 @@ export default function VariantsList({
         sorted.sort((a, b) => b.cardName.localeCompare(a.cardName));
         break;
       case 'date-newest':
-        // Le carte non ancora uscite (nessuna releaseDate) vanno sempre in
-        // fondo, in entrambe le direzioni - non sono "più recenti" solo
-        // perché mancano di una data da confrontare.
+      case 'date-oldest': {
+        // Unreleased cards (dated or not) always go last in both directions;
+        // among them, dated ones come before undated ones.
+        const dir = sortBy === 'date-newest' ? -1 : 1;
+        const isOut = (v: Variant) => v.releaseStatus === 'released';
         sorted.sort((a, b) => {
+          if (isOut(a) !== isOut(b)) return isOut(a) ? -1 : 1;
           if (!a.releaseDate && !b.releaseDate) return 0;
           if (!a.releaseDate) return 1;
           if (!b.releaseDate) return -1;
-          return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+          return dir * (new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
         });
         break;
-      case 'date-oldest':
-        sorted.sort((a, b) => {
-          if (!a.releaseDate && !b.releaseDate) return 0;
-          if (!a.releaseDate) return 1;
-          if (!b.releaseDate) return -1;
-          return new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime();
-        });
-        break;
+      }
       case 'rarity':
         sorted.sort(
           (a, b) =>

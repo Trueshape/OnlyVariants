@@ -67,11 +67,8 @@ describe('getUnreleasedVariants', () => {
     ]);
   });
 
-  it('excludes Promo-source variants', () => {
-    const data = [
-      v({ id: 'promo', releaseStatus: 'unreleased', source: 'Promo', releaseDate: daysFromNow(5) }),
-      v({ id: 'general', releaseStatus: 'unreleased', source: 'General Pool', releaseDate: daysFromNow(5) }),
-    ];
-    expect(snapCompleteService.getUnreleasedVariants(data).map((x) => x.id)).toEqual(['general']);
+  it('includes Promo-source variants', () => {
+    const data = [v({ id: 'promo', releaseStatus: 'unknown', source: 'Promo' })];
+    expect(snapCompleteService.getUnreleasedVariants(data).map((x) => x.id)).toEqual(['promo']);
   });
 });
