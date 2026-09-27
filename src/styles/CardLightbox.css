@@ -20,12 +20,20 @@
   }
 }
 
+.card-lightbox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  max-height: 96vh;
+}
+
 .card-lightbox-image {
   /* Force a size so the 460x497 source is actually scaled UP (max-* alone
      only ever shrinks). height drives it; width follows the aspect ratio
      and is capped so it never overflows a narrow window. Upscaling
      softness is expected and accepted. */
-  height: 96vh;
+  height: 90vh;
   width: auto;
   max-width: 96vw;
   object-fit: contain;
@@ -38,6 +46,13 @@
 
 .card-lightbox-image.is-loaded {
   opacity: 1;
+}
+
+.card-lightbox-cost {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .card-lightbox-spinner {

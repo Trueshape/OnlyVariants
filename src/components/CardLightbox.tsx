@@ -114,18 +114,27 @@ export default function CardLightbox({ variants, index, onNavigate, onClose }: C
       )}
 
       {!loaded && <div className="card-lightbox-spinner" aria-hidden="true" />}
-      <img
-        className={`card-lightbox-image ${loaded ? 'is-loaded' : ''}`}
-        src={src}
-        alt={`${variant.cardName} - ${variant.variantName}`}
-        onClick={(e) => e.stopPropagation()}
-        onLoad={() => setLoadedId(variant.id)}
-        onError={(e) => {
-          const img = e.target as HTMLImageElement;
-          if (img.src !== CARD_PLACEHOLDER) img.src = CARD_PLACEHOLDER;
-          setLoadedId(variant.id);
-        }}
-      />
+      <div className="card-lightbox-content">
+        <img
+          className={`card-lightbox-image ${loaded ? 'is-loaded' : ''}`}
+          src={src}
+          alt={`${variant.cardName} - ${variant.variantName}`}
+          onClick={(e) => e.stopPropagation()}
+          onLoad={() => setLoadedId(variant.id)}
+          onError={(e) => {
+            const img = e.target as HTMLImageElement;
+            if (img.src !== CARD_PLACEHOLDER) img.src = CARD_PLACEHOLDER;
+            setLoadedId(variant.id);
+          }}
+        />
+        {loaded && (variant.goldCost != null || variant.tokenCost != null) && (
+          <div className="card-lightbox-cost" onClick={(e) => e.stopPropagation()}>
+            {variant.goldCost != null && `${variant.goldCost.toLocaleString()} Gold`}
+            {variant.goldCost != null && variant.tokenCost != null && ' · '}
+            {variant.tokenCost != null && `${variant.tokenCost.toLocaleString()} Tokens`}
+          </div>
+        )}
+      </div>
 
       {hasNext && (
         <button
