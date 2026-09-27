@@ -83,18 +83,18 @@ export function useVariantsData(): UseVariantsData {
         // No cost data available - not fatal, cards just won't show a bundle name.
       }
 
-      setAllVariants(variants);
-
       // Load owned variants: prefer the freshly-imported file if present,
       // otherwise fall back to whatever was cached locally before.
+      let owned = new Set<string>();
+      let acquired: Record<string, string> = {};
       try {
         const response = await fetch('/owned-variants.json', { cache: 'no-store' });
         if (response.ok) {
           const data: OwnedVariantsFile = await response.json();
-          setOwnedIds(new Set(data.ownedIds));
+          owned = new Set(data.ownedIds);
           localStorage.setItem('marvelSnapOwned', JSON.stringify(data.ownedIds));
           if (data.acquisitionDates) {
-            setAcquisitionDates(data.acquisitionDates);
+            acquired = data.acquisitionDates;
             localStorage.setItem('marvelSnapAcquisitionDates', JSON.stringify(data.acquisitionDates));
           }
         } else {
@@ -102,15 +102,29 @@ export function useVariantsData(): UseVariantsData {
         }
       } catch {
         const savedOwned = localStorage.getItem('marvelSnapOwned');
-        if (savedOwned) {
-          setOwnedIds(new Set(JSON.parse(savedOwned)));
-        }
+        if (savedOwned) owned = new Set(JSON.parse(savedOwned));
         const savedAcquisitionDates = localStorage.getItem('marvelSnapAcquisitionDates');
-        if (savedAcquisitionDates) {
-          setAcquisitionDates(JSON.parse(savedAcquisitionDates));
-        }
+        if (savedAcquisitionDates) acquired = JSON.parse(savedAcquisitionDates);
       }
 
+      // A card you own is out, whatever SnapComplete says: Promo/LTGM cards
+      // often have no listed release date (or a 2099 placeholder) even though
+      // players already have them. Fall back to the acquisition date so they
+      // still sort sensibly by release date.
+      const now = Date.now();
+      variants = variants.map((v) => {
+        if (!owned.has(v.id) || v.releaseStatus === 'released') return v;
+        const dateIsReal = v.releaseDate && new Date(v.releaseDate).getTime() <= now;
+        return {
+          ...v,
+          releaseStatus: 'released',
+          releaseDate: dateIsReal ? v.releaseDate : acquired[v.id] ?? undefined,
+        };
+      });
+
+      setAllVariants(variants);
+      setOwnedIds(owned);
+      setAcquisitionDates(acquired);
       setLoading(false);
     };
 
