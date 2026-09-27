@@ -183,16 +183,23 @@ export default function VariantsList({
         sorted.sort((a, b) => b.cardName.localeCompare(a.cardName));
         break;
       case 'date-newest':
-        sorted.sort(
-          (a, b) =>
-            new Date(b.releaseDate || 0).getTime() - new Date(a.releaseDate || 0).getTime()
-        );
+        // Le carte non ancora uscite (nessuna releaseDate) vanno sempre in
+        // fondo, in entrambe le direzioni - non sono "più recenti" solo
+        // perché mancano di una data da confrontare.
+        sorted.sort((a, b) => {
+          if (!a.releaseDate && !b.releaseDate) return 0;
+          if (!a.releaseDate) return 1;
+          if (!b.releaseDate) return -1;
+          return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+        });
         break;
       case 'date-oldest':
-        sorted.sort(
-          (a, b) =>
-            new Date(a.releaseDate || 0).getTime() - new Date(b.releaseDate || 0).getTime()
-        );
+        sorted.sort((a, b) => {
+          if (!a.releaseDate && !b.releaseDate) return 0;
+          if (!a.releaseDate) return 1;
+          if (!b.releaseDate) return -1;
+          return new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime();
+        });
         break;
       case 'rarity':
         sorted.sort(
