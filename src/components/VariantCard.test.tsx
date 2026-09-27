@@ -97,12 +97,7 @@ describe('VariantCard', () => {
     expect(screen.queryByText(/Inker/)).not.toBeInTheDocument();
   });
 
-  it('shows a confirmed gold price over the estimated tier price', () => {
-    const { container } = renderCard(makeVariant({ rarity: 'SuperRare', goldCost: 900 }));
-    expect(infoValueFor(container, 'Price:')).toBe('900 Gold');
-  });
-
-  it('falls back to the tier-estimated price when there is no confirmed cost', () => {
+  it('shows the fixed tier price for the card\'s rarity', () => {
     const { container } = renderCard(makeVariant({ rarity: 'SuperRare' }));
     // toLocaleString()'s thousands separator depends on the runtime's ICU
     // data, so compare digits only rather than assuming "1,200".

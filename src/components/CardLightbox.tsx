@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import type { Variant } from '../types/variant';
 import { CARD_PLACEHOLDER } from '../utils/placeholder';
+import { getVariantPrice } from '../utils/tierPrices';
 import '../styles/CardLightbox.css';
 
 interface CardLightboxProps {
@@ -72,6 +73,7 @@ export default function CardLightbox({ variants, index, onNavigate, onClose }: C
   if (!variant) return null;
 
   const src = variant.imageUrl || CARD_PLACEHOLDER;
+  const price = getVariantPrice(variant);
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0]?.clientX ?? null;
@@ -127,11 +129,18 @@ export default function CardLightbox({ variants, index, onNavigate, onClose }: C
             setLoadedId(variant.id);
           }}
         />
-        {loaded && (variant.goldCost != null || variant.tokenCost != null) && (
-          <div className="card-lightbox-cost" onClick={(e) => e.stopPropagation()}>
-            {variant.goldCost != null && `${variant.goldCost.toLocaleString()} Gold`}
-            {variant.goldCost != null && variant.tokenCost != null && ' · '}
-            {variant.tokenCost != null && `${variant.tokenCost.toLocaleString()} Tokens`}
+        {loaded && price && (
+          <div
+            className={`card-lightbox-cost card-lightbox-cost-${price.currency}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              className="card-lightbox-cost-icon"
+              src={price.currency === 'gold' ? '/icons/gold_big.webp' : '/icons/tokens_big.webp'}
+              alt=""
+              aria-hidden="true"
+            />
+            {price.amount.toLocaleString()} {price.currency === 'gold' ? 'Gold' : 'Tokens'}
           </div>
         )}
       </div>

@@ -258,7 +258,7 @@ export default function VariantCard({
             </div>
           )}
           {price && (
-            <div className="info-row" title={price.estimated ? 'Estimated from its rarity/vault tier - not a confirmed price from your account' : undefined}>
+            <div className="info-row">
               <Coins size={13} />
               <span className="info-label">Price:</span>
               <span className="info-value" style={badgeStyle(badgeColors.get(`price:${price.currency}`), 0.06, 0.1)}>

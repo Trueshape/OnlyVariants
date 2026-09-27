@@ -32,32 +32,20 @@ describe('estimatedTierPrice', () => {
 });
 
 describe('getVariantPrice', () => {
-  it('prefers a confirmed goldCost/tokenCost over the tier estimate', () => {
-    expect(
-      getVariantPrice({ goldCost: 999, releaseStatus: 'released', rarity: 'Rare' })
-    ).toEqual({ amount: 999, currency: 'gold', estimated: false });
-    expect(
-      getVariantPrice({ tokenCost: 111, releaseStatus: 'released', rarity: 'Ultimate' })
-    ).toEqual({ amount: 111, currency: 'token', estimated: false });
-  });
-
-  it('falls back to an estimated tier price for a released card with no confirmed cost', () => {
+  it('prices a released card by its tier - same price for every card of that tier', () => {
     expect(getVariantPrice({ releaseStatus: 'released', rarity: 'Rare' })).toEqual({
       amount: 700,
       currency: 'gold',
-      estimated: true,
+    });
+    expect(getVariantPrice({ releaseStatus: 'released', vaultQuality: 'Sensational' })).toEqual({
+      amount: 2000,
+      currency: 'gold',
     });
   });
 
-  it('never estimates for an unreleased or unknown-date card', () => {
+  it('never prices an unreleased or unknown-date card - its eventual tier is unconfirmed', () => {
     expect(getVariantPrice({ releaseStatus: 'unreleased', rarity: 'Rare' })).toBeUndefined();
     expect(getVariantPrice({ releaseStatus: 'unknown', rarity: 'Rare' })).toBeUndefined();
-  });
-
-  it('still honors a confirmed cost even on an unreleased card', () => {
-    expect(
-      getVariantPrice({ goldCost: 2000, releaseStatus: 'unreleased', vaultQuality: 'Sensational' })
-    ).toEqual({ amount: 2000, currency: 'gold', estimated: false });
   });
 
   it('returns undefined for a released card with no priceable tier', () => {

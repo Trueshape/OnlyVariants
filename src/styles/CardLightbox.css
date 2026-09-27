@@ -49,10 +49,25 @@
 }
 
 .card-lightbox-cost {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.75);
+}
+
+.card-lightbox-cost-icon {
+  height: 1em;
+  width: auto;
+}
+
+.card-lightbox-cost-gold {
+  color: #f4c430;
+}
+
+.card-lightbox-cost-token {
+  color: #b9bec7;
 }
 
 .card-lightbox-spinner {
