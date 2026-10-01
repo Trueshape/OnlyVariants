@@ -20,19 +20,19 @@ Vedi [SCRAPING.md](SCRAPING.md) per il dettaglio della pipeline dati.
   della collezione. Senza, l'app parte comunque (0 carte possedute finché
   non generi i dati).
 
-**Node.js non serve installarlo**: `avvia-sito.bat` ne scarica una copia
+**Node.js non serve installarlo**: `Avvia OnlyVariants.bat` ne scarica una copia
 portable in `tools/node/` al primo avvio (nessun installer, nessun admin).
 
 ## Avvio rapido
 
 Windows, doppio click:
 
-- `avvia-sito.bat` — scarica Node (prima volta), installa le dipendenze,
+- `Avvia OnlyVariants.bat` — scarica Node (prima volta), installa le dipendenze,
   avvia il dev server e apre il browser
-- `aggiorna-dati.bat` — riscarica varianti + reimporta collezione/costi
+- `Aggiorna dati OnlyVariants.bat` — riscarica varianti + reimporta collezione/costi
 
 Su un PC nuovo: scarica il progetto (ZIP da GitHub o `git clone`) e fai
-doppio click su `avvia-sito.bat`. Nient'altro.
+doppio click su `Avvia OnlyVariants.bat`. Nient'altro.
 
 Da terminale (se hai già Node):
 

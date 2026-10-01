@@ -2,7 +2,7 @@
 
 Tutti i file in `public/*.json` sono generati. Tre script li producono; girano
 automaticamente prima di `npm run dev` (`scripts/predev.js`) e insieme da
-`aggiorna-dati.bat`. Ogni script è "best effort": se la fonte non è
+`Aggiorna dati OnlyVariants.bat`. Ogni script è "best effort": se la fonte non è
 disponibile logga un warning e lascia intatto il file esistente.
 
 Gli script sono **deterministici**: rigenerarli senza che i dati siano
