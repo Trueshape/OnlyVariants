@@ -132,8 +132,18 @@ describe('VariantCard', () => {
         unreleased: { ...DEFAULT_STYLE, indicator: { style: 'bar', color: '#e74c3c', opacity: 0.75 } },
       },
     });
-    renderCard(makeVariant({ releaseStatus: 'unreleased' }), { activeViewId: 'unreleased' }, config);
+    renderCard(makeVariant({ releaseStatus: 'unreleased' }), { activeViewId: 'all' }, config);
     expect(screen.getByText('Unreleased')).toBeInTheDocument();
+  });
+
+  it('never shows the Unreleased indicator on the Upcoming page', () => {
+    const config = makeConfig({
+      styles: {
+        unreleased: { ...DEFAULT_STYLE, indicator: { style: 'bar', color: '#e74c3c', opacity: 0.75 } },
+      },
+    });
+    renderCard(makeVariant({ releaseStatus: 'unreleased' }), { activeViewId: 'unreleased' }, config);
+    expect(screen.queryByText('Unreleased')).not.toBeInTheDocument();
   });
 
   it('calls onFilterSource when the source badge is clicked', () => {
