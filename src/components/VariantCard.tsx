@@ -66,7 +66,12 @@ export default function VariantCard({
   // list can still show.
   const indicatorCandidates = [
     ...listTabs.map((tab) => ({ key: tab.id, label: tab.name, active: inList(tab) && !isHiddenHere(tab.id) })),
-    { key: 'unreleased', label: 'Unreleased', active: isUnreleased && !isHiddenHere('unreleased') },
+    // Never on the Upcoming page itself: every card there is unreleased.
+    {
+      key: 'unreleased',
+      label: 'Unreleased',
+      active: isUnreleased && activeViewId !== 'unreleased' && !isHiddenHere('unreleased'),
+    },
   ];
   const activeIndicator = indicatorCandidates
     .filter((c) => c.active)
