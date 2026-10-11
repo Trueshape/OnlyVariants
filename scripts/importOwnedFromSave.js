@@ -2,6 +2,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { resolveAcquisitionDates } from './lib/acquisitionDates.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -92,29 +93,40 @@ function main() {
   // suffisso numerico corrisponde allo stesso "V" usato sopra. Se la stessa
   // variante compare più volte (es. dopo uno split), teniamo la data più
   // vecchia: è la prima volta che è stata ottenuta.
+  // Il TimeCreated di un'istanza NON e' affidabile come data di acquisizione
+  // (l'arte puo' essere applicata a un'istanza piu' vecchia), quindi la data
+  // di una variante viene decisa una sola volta, la prima volta che compare
+  // come posseduta, e poi mantenuta - vedi lib/acquisitionDates.js.
   const cardEntries = data?.ServerState?.Cards;
-  const acquisitionDates = {};
+  const instancesById = {};
 
   if (Array.isArray(cardEntries)) {
     for (const card of cardEntries) {
       const artVariantId = card?.ArtVariantDefId; // e.g. "Darkhawk_08"
-      const timeCreated = card?.TimeCreated;
-      if (!artVariantId || !timeCreated) continue;
+      if (!artVariantId) continue;
 
       const match = artVariantId.match(/^(.+)_(\d+)$/);
       if (!match) continue;
 
       const [, cardDefId, suffix] = match;
-      const kebabName = toKebabCase(cardDefId);
-      const paddedSuffix = String(Number(suffix)).padStart(2, '0');
-      const id = `${kebabName}-${paddedSuffix}`;
-
-      const existing = acquisitionDates[id];
-      if (!existing || new Date(timeCreated).getTime() < new Date(existing).getTime()) {
-        acquisitionDates[id] = timeCreated;
-      }
+      const id = `${toKebabCase(cardDefId)}-${String(Number(suffix)).padStart(2, '0')}`;
+      (instancesById[id] ??= []).push({ created: card.TimeCreated, updated: card.TimeUpdated });
     }
   }
+
+  let prev = null;
+  try {
+    prev = JSON.parse(fs.readFileSync(OUTPUT_PATH, 'utf-8'));
+  } catch {
+    // first run: nothing to compare against
+  }
+
+  const acquisitionDates = resolveAcquisitionDates({
+    ownedIds,
+    instancesById,
+    prev,
+    saveMtimeIso: fs.statSync(savePath).mtime.toISOString(),
+  });
 
   console.log(`✅ Estratte ${Object.keys(acquisitionDates).length} date di acquisizione\n`);
 
