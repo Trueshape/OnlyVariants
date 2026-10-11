@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Search, Heart } from 'lucide-react';
+import { Search, Heart, X } from 'lucide-react';
 import type { Variant } from '../types/variant';
 import { useCardConfig } from '../hooks/useCardConfig';
 import { snapCompleteService } from '../services/snapCompleteService';
@@ -107,6 +107,17 @@ export default function UnreleasedCards({ allVariants, ownedIds }: UnreleasedCar
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              className="search-clear"
+              onClick={() => setSearchQuery('')}
+              title="Clear search"
+              aria-label="Clear search"
+            >
+              <X size={12} />
+            </button>
+          )}
         </div>
 
         <button

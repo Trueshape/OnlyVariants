@@ -78,6 +78,17 @@ export default function VariantsFilterBar({
                 onChange={(e) => onSearchQueryChange(e.target.value)}
                 className="search-input"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  className="search-clear"
+                  onClick={() => onSearchQueryChange('')}
+                  title="Clear search"
+                  aria-label="Clear search"
+                >
+                  <X size={12} />
+                </button>
+              )}
             </div>
           </div>
 

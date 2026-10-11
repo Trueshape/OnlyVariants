@@ -111,6 +111,27 @@
   color: #565c69;
 }
 
+/* Round "x" inside the search bar (shared by the main list and Upcoming). */
+.search-clear {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #3a3f4b;
+  color: #dfe2e8;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.search-clear:hover {
+  background: #565c69;
+}
+
 /* ---------- Rarity quick-filter row ---------- */
 
 .rarity-filter-row {
